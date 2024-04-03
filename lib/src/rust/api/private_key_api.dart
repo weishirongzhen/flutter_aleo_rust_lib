@@ -9,11 +9,18 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 String privateKeyNew({dynamic hint}) =>
     RustLib.instance.api.privateKeyNew(hint: hint);
 
-String fromSeedUnchecked({required String seed, dynamic hint}) =>
+String fromSeedUnchecked({required List<int> seed, dynamic hint}) =>
     RustLib.instance.api.fromSeedUnchecked(seed: seed, hint: hint);
 
-String toAddress({required String pk, dynamic hint}) =>
-    RustLib.instance.api.toAddress(pk: pk, hint: hint);
+String toAddress({required String privateKey, dynamic hint}) =>
+    RustLib.instance.api.toAddress(privateKey: privateKey, hint: hint);
 
 String toViewKey({required String pk, dynamic hint}) =>
     RustLib.instance.api.toViewKey(pk: pk, hint: hint);
+
+String sign(
+        {required List<int> messageHex,
+        required String privateKey,
+        dynamic hint}) =>
+    RustLib.instance.api
+        .sign(messageHex: messageHex, privateKey: privateKey, hint: hint);

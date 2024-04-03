@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/api/private_key_api.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/api/simple.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/frb_generated.dart';
+import 'package:convert/convert.dart';
 
 Future<void> main() async {
   await RustLib.init();
@@ -27,8 +32,8 @@ class _MyAppState extends State<MyApp> {
   /// aleo1m5tkjhn8586xgnwcq3mcmffp9gmuyeq2fdz6lsj647fsckcqzygqxphn62
   @override
   void initState() {
-    // pk = privateKeyNew();
-    pk = "APrivateKey1zkp96vBfhFFeo6hHrDkdYwxTjJSmL8S7cgdezbrD5c7Tmiw";
+    pk = privateKeyNew();
+    // pk = "APrivateKey1zkp96vBfhFFeo6hHrDkdYwxTjJSmL8S7cgdezbrD5c7Tmiw";
     super.initState();
   }
 
@@ -43,10 +48,11 @@ class _MyAppState extends State<MyApp> {
             Text(
                 'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
             Text(
-                'from seed: `${fromSeedUnchecked(seed: "4fc075d5a84a474b766d6222fc39f3200d2e1f1d13b444a50db885643890c171")}`'),
+                'from seed: `${fromSeedUnchecked(seed: hex.decode("4fc075d5a84a474b766d6222fc39f3200d2e1f1d13b444a50db885643890c171"))}`'),
             Text('private key: `$pk`'),
             Text('view key: `${toViewKey(pk: pk)}`'),
-            Text('address: `${toAddress(pk: pk)}`'),
+            Text('address: `${toAddress(privateKey: pk)}`'),
+            Text('sign output: `${sign(messageHex: "1".codeUnits,privateKey: pk)}`'),
           ],
         ),
       ),
