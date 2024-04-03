@@ -3,4 +3,4 @@
 //
 
 pub mod simple;
-pub mod private_key;
+pub mod private_key_api;

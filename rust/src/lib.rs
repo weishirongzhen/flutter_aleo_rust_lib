@@ -16,6 +16,7 @@ pub use types::Field;
 
 #[cfg(not(test))]
 mod thread_pool;
+mod test;
 
 use wasm_bindgen::prelude::*;
 

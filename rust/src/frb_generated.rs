@@ -38,6 +38,35 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire_from_seed_unchecked_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "from_seed_unchecked",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_seed = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::private_key_api::from_seed_unchecked(api_seed))
+            })())
+        },
+    )
+}
 fn wire_private_key_new_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -61,7 +90,65 @@ fn wire_private_key_new_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::private_key::private_key_new())
+                Result::<_, ()>::Ok(crate::api::private_key_api::private_key_new())
+            })())
+        },
+    )
+}
+fn wire_to_address_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "to_address",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_pk = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::private_key_api::to_address(api_pk))
+            })())
+        },
+    )
+}
+fn wire_to_view_key_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "to_view_key",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_pk = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::private_key_api::to_view_key(api_pk))
             })())
         },
     )
@@ -213,7 +300,7 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        4 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -226,9 +313,12 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
+        2 => wire_from_seed_unchecked_impl(ptr, rust_vec_len, data_len),
         1 => wire_private_key_new_impl(ptr, rust_vec_len, data_len),
-        2 => wire_greet_impl(ptr, rust_vec_len, data_len),
-        3 => wire_hello_impl(ptr, rust_vec_len, data_len),
+        3 => wire_to_address_impl(ptr, rust_vec_len, data_len),
+        4 => wire_to_view_key_impl(ptr, rust_vec_len, data_len),
+        5 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        6 => wire_hello_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

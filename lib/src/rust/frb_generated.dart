@@ -3,7 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/private_key.dart';
+import 'api/private_key_api.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -58,14 +58,20 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
-    stem: 'rust_lib_flutter_rust_demo',
+    stem: 'rust_lib_flutter_aleo_rust_lib',
     ioDirectory: 'rust/target/release/',
     webPrefix: 'pkg/',
   );
 }
 
 abstract class RustLibApi extends BaseApi {
+  String fromSeedUnchecked({required String seed, dynamic hint});
+
   String privateKeyNew({dynamic hint});
+
+  String toAddress({required String pk, dynamic hint});
+
+  String toViewKey({required String pk, dynamic hint});
 
   String greet({required String name, dynamic hint});
 
@@ -81,6 +87,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @override
+  String fromSeedUnchecked({required String seed, dynamic hint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seed, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kFromSeedUncheckedConstMeta,
+      argValues: [seed],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFromSeedUncheckedConstMeta => const TaskConstMeta(
+        debugName: "from_seed_unchecked",
+        argNames: ["seed"],
+      );
 
   @override
   String privateKeyNew({dynamic hint}) {
@@ -106,12 +136,60 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  String toAddress({required String pk, dynamic hint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(pk, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kToAddressConstMeta,
+      argValues: [pk],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kToAddressConstMeta => const TaskConstMeta(
+        debugName: "to_address",
+        argNames: ["pk"],
+      );
+
+  @override
+  String toViewKey({required String pk, dynamic hint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(pk, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kToViewKeyConstMeta,
+      argValues: [pk],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kToViewKeyConstMeta => const TaskConstMeta(
+        debugName: "to_view_key",
+        argNames: ["pk"],
+      );
+
+  @override
   String greet({required String name, dynamic hint}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -135,7 +213,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(a, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -159,7 +237,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
