@@ -1,8 +1,8 @@
 name: flutter_aleo_rust_lib
-description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
+description: "A Flutter project wrap Aleo network rust api to dart api"
+homepage: https://github.com/weishirongzhen/flutter_aleo_rust_lib
+
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 0.0.1-dev.1
 
 environment:
   sdk: '>=3.3.1 <4.0.0'
@@ -35,9 +35,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
-  rust_lib_flutter_aleo_rust_lib:
-    path: rust_builder
-  flutter_rust_bridge: 2.0.0-dev.29
+  rust_lib_flutter_aleo_rust_lib: 0.0.1-dev.1
+#    path: rust_builder
+  flutter_rust_bridge: ^2.0.0-dev.29
 
 dev_dependencies:
   flutter_test:
