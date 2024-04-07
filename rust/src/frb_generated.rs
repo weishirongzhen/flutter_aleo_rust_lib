@@ -62,7 +62,7 @@ fn wire_from_seed_unchecked_impl(
             let api_seed = <Vec<u8>>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::private_key_api::from_seed_unchecked(api_seed))
+                Result::<_, ()>::Ok(crate::api::aleo_api::from_seed_unchecked(api_seed))
             })())
         },
     )
@@ -90,7 +90,7 @@ fn wire_private_key_new_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::private_key_api::private_key_new())
+                Result::<_, ()>::Ok(crate::api::aleo_api::private_key_new())
             })())
         },
     )
@@ -120,10 +120,7 @@ fn wire_sign_impl(
             let api_private_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::private_key_api::sign(
-                    api_message_hex,
-                    api_private_key,
-                ))
+                Result::<_, ()>::Ok(crate::api::aleo_api::sign(api_message_hex, api_private_key))
             })())
         },
     )
@@ -152,7 +149,7 @@ fn wire_to_address_impl(
             let api_private_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::private_key_api::to_address(api_private_key))
+                Result::<_, ()>::Ok(crate::api::aleo_api::to_address(api_private_key))
             })())
         },
     )
@@ -181,7 +178,7 @@ fn wire_to_view_key_impl(
             let api_pk = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::private_key_api::to_view_key(api_pk))
+                Result::<_, ()>::Ok(crate::api::aleo_api::to_view_key(api_pk))
             })())
         },
     )

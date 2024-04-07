@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_aleo_rust_lib/src/rust/api/private_key_api.dart';
+import 'package:flutter_aleo_rust_lib/src/rust/api/aleo_api.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/api/simple.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/frb_generated.dart';
-import 'package:convert/convert.dart';
 
 import 'aleo/aleo_hd_key.dart';
 
