@@ -9,7 +9,7 @@ mod tests {
     }
 
     #[test]
-    fn test_private_key_from_seed()-> Result<(), Box<dyn std::error::Error>>{
+    fn test_private_key_from_seed() -> Result<(), Box<dyn std::error::Error>> {
         let hex_str = "4fc075d5a84a474b766d6222fc39f3200d2e1f1d13b444a50db885643890c171";
         let bytes = hex::decode(hex_str)?;
         let bytes_slice: &[u8] = &bytes;
@@ -35,5 +35,14 @@ mod tests {
     //         Err(e) => println!("Error: {}", e),
     //     }
     //
+    // }
+
+    // #[tokio::test]
+    // async fn test_build_transfer() {
+    //     let pk = PrivateKey::from_string("APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8").unwrap();
+    //
+    //     let result = ProgramManager::transfer(&pk, 0.1, "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x", "public", None, 0.29, None, None, None, None, None, None, None).await;
+    //
+    //     println!("result {}", result.unwrap().to_string())
     // }
 }

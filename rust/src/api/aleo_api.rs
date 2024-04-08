@@ -1,8 +1,10 @@
 use sha2::digest::consts::U8;
 use crate::account::{PrivateKey};
-use crate::Address;
+use crate::{Address, OfflineQuery, ProgramManager, ProvingKey, RecordPlaintext, VerifyingKey};
+use anyhow;
+use futures::executor;
 
-
+// 0.3.1
 #[flutter_rust_bridge::frb(sync)]
 pub fn private_key_new() -> String { return PrivateKey::new().to_string(); }
 
@@ -21,15 +23,40 @@ pub fn to_address(private_key: String) -> String {
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn to_view_key(pk: String) -> String {
-    return PrivateKey::from_string(&pk).unwrap().to_view_key().to_string();
+pub fn to_view_key(private_key: String) -> String {
+    return PrivateKey::from_string(&private_key).unwrap().to_view_key().to_string();
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn sign(message_hex: Vec<u8>, private_key: String) -> String {
+pub fn sign(message_bytes: Vec<u8>, private_key: String) -> String {
     let pk = PrivateKey::from_string(&private_key).unwrap();
-    return pk.sign(&message_hex).to_string();
+    return pk.sign(&message_bytes).to_string();
 }
+
+// #[flutter_rust_bridge::frb(sync)]
+// pub fn transfer(private_key: String,
+//                 amount_credits: f64,
+//                 recipient: String,
+//                 transfer_type: String,
+//                 amount_record: Option<String>,
+//                 fee_credits: f64,
+//                 fee_record: Option<String>,
+//                 url: Option<String>,
+//                 transfer_proving_key: Option<String>,
+//                 transfer_verifying_key: Option<String>,
+//                 fee_proving_key: Option<String>,
+//                 fee_verifying_key: Option<String>,
+//                 offline_query: Option<String>,
+// ) -> String {
+//     // let pk = PrivateKey::from_string(&private_key).unwrap();
+//     let pk = PrivateKey::from_string("APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8").unwrap();
+//
+//     let v = executor::block_on(ProgramManager::transfer(&pk, 0.1, "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x", "public", None, 0.29, None, None, None, None, None, None, None));
+//     return v.unwrap().to_string();
+//
+//     // ProgramManager::transfer(&pk, amount_credits, &recipient, &transfer_type, None, fee_credits, None, url, None, None, None, None, None);
+//     // return result.unwrap().to_string();
+// }
 
 
 

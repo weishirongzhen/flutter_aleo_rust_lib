@@ -116,11 +116,14 @@ fn wire_sign_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_message_hex = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_message_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
             let api_private_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::aleo_api::sign(api_message_hex, api_private_key))
+                Result::<_, ()>::Ok(crate::api::aleo_api::sign(
+                    api_message_bytes,
+                    api_private_key,
+                ))
             })())
         },
     )
@@ -175,10 +178,10 @@ fn wire_to_view_key_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_pk = <String>::sse_decode(&mut deserializer);
+            let api_private_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::aleo_api::to_view_key(api_pk))
+                Result::<_, ()>::Ok(crate::api::aleo_api::to_view_key(api_private_key))
             })())
         },
     )

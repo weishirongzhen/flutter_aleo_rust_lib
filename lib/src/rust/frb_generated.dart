@@ -70,13 +70,13 @@ abstract class RustLibApi extends BaseApi {
   String privateKeyNew({dynamic hint});
 
   String sign(
-      {required List<int> messageHex,
+      {required List<int> messageBytes,
       required String privateKey,
       dynamic hint});
 
   String toAddress({required String privateKey, dynamic hint});
 
-  String toViewKey({required String pk, dynamic hint});
+  String toViewKey({required String privateKey, dynamic hint});
 
   String greet({required String name, dynamic hint});
 
@@ -142,13 +142,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   String sign(
-      {required List<int> messageHex,
+      {required List<int> messageBytes,
       required String privateKey,
       dynamic hint}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_prim_u_8_loose(messageHex, serializer);
+        sse_encode_list_prim_u_8_loose(messageBytes, serializer);
         sse_encode_String(privateKey, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
@@ -157,7 +157,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kSignConstMeta,
-      argValues: [messageHex, privateKey],
+      argValues: [messageBytes, privateKey],
       apiImpl: this,
       hint: hint,
     ));
@@ -165,7 +165,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kSignConstMeta => const TaskConstMeta(
         debugName: "sign",
-        argNames: ["messageHex", "privateKey"],
+        argNames: ["messageBytes", "privateKey"],
       );
 
   @override
@@ -193,11 +193,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String toViewKey({required String pk, dynamic hint}) {
+  String toViewKey({required String privateKey, dynamic hint}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(pk, serializer);
+        sse_encode_String(privateKey, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
       },
       codec: SseCodec(
@@ -205,7 +205,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kToViewKeyConstMeta,
-      argValues: [pk],
+      argValues: [privateKey],
       apiImpl: this,
       hint: hint,
     ));
@@ -213,7 +213,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kToViewKeyConstMeta => const TaskConstMeta(
         debugName: "to_view_key",
-        argNames: ["pk"],
+        argNames: ["privateKey"],
       );
 
   @override

@@ -15,12 +15,12 @@ String fromSeedUnchecked({required List<int> seed, dynamic hint}) =>
 String toAddress({required String privateKey, dynamic hint}) =>
     RustLib.instance.api.toAddress(privateKey: privateKey, hint: hint);
 
-String toViewKey({required String pk, dynamic hint}) =>
-    RustLib.instance.api.toViewKey(pk: pk, hint: hint);
+String toViewKey({required String privateKey, dynamic hint}) =>
+    RustLib.instance.api.toViewKey(privateKey: privateKey, hint: hint);
 
 String sign(
-        {required List<int> messageHex,
+        {required List<int> messageBytes,
         required String privateKey,
         dynamic hint}) =>
     RustLib.instance.api
-        .sign(messageHex: messageHex, privateKey: privateKey, hint: hint);
+        .sign(messageBytes: messageBytes, privateKey: privateKey, hint: hint);

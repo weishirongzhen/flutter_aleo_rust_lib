@@ -27,13 +27,14 @@ use std::str::FromStr;
 
 use types::native::RecordPlaintextNative;
 
-// Facilities for cross-platform logging in both web browsers and nodeJS
-#[wasm_bindgen]
-extern "C" {
-    // Log a &str the console in the browser or console.log in nodejs
-    #[wasm_bindgen(js_namespace = console)]
-    pub fn log(s: &str);
-}
+// // Facilities for cross-platform logging in both web browsers and nodeJS
+// #[wasm_bindgen]
+// extern "C" {
+//     // Log a &str the console in the browser or console.log in nodejs
+//     #[wasm_bindgen(js_namespace = console)]
+//     pub fn log(s: &str);
+// }
+pub fn log(s: &str){}
 
 /// A trait providing convenient methods for accessing the amount of Aleo present in a record
 pub trait Credits {
