@@ -1,8 +1,7 @@
-// use sha2::digest::consts::U8;
 use crate::account::{PrivateKey};
-// use crate::{Address, OfflineQuery, ProgramManager, ProvingKey, RecordPlaintext, VerifyingKey};
 use anyhow;
-// use futures::executor;
+use crate::aleo_archived_api::*;
+
 
 // 0.3.1
 #[flutter_rust_bridge::frb(sync)]
@@ -31,6 +30,20 @@ pub fn to_view_key(private_key: String) -> String {
 pub fn sign(message_bytes: Vec<u8>, private_key: String) -> String {
     let pk = PrivateKey::from_string(&private_key).unwrap();
     return pk.sign(&message_bytes).to_string();
+}
+
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn transfer(recipient: String,
+                transfer_type: String,
+                amount: f64,
+                fee: f64,
+                private_fee: bool,
+                private_key: String,
+                amount_record: Option<String>,
+                fee_record: Option<String>,
+                endpoint: Option<String>, ) -> String {
+    return do_transfer(recipient, transfer_type, amount, fee, private_fee, private_key, amount_record, fee_record, endpoint).unwrap();
 }
 
 // #[flutter_rust_bridge::frb(sync)]

@@ -49,3 +49,12 @@ version = "2.0.0"
 [dependencies.snarkvm-wasm]
 version = "0.16.19"
 features = [ "console", "fields", "utilities" ]
+
+[dependencies.aleo]
+version = "0.6.8"
+[dependencies.aleo-rust]
+version = "0.6.8"
+
+[dependencies.colored]
+version = "2"
+

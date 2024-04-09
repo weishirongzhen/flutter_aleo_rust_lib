@@ -18,6 +18,9 @@ use std::str::FromStr;
 
 use types::native::RecordPlaintextNative;
 
+pub mod archived_aleo;
+pub use archived_aleo::*;
+
 pub trait Credits {
     /// Get the amount of credits in the record if the record possesses Aleo credits
     fn credits(&self) -> Result<f64, String> {
