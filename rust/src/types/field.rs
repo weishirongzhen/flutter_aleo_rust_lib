@@ -16,23 +16,20 @@
 
 use crate::types::native::FieldNative;
 
-use wasm_bindgen::prelude::wasm_bindgen;
 
 use std::str::FromStr;
 
-#[wasm_bindgen]
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Field(FieldNative);
 
-#[wasm_bindgen]
+
 impl Field {
-    #[wasm_bindgen(js_name = "toString")]
     #[allow(clippy::inherent_to_string)]
     pub fn to_string(&self) -> String {
         self.0.to_string()
     }
 
-    #[wasm_bindgen(js_name = "fromString")]
     pub fn from_string(field: &str) -> Result<Field, String> {
         Ok(Self(FieldNative::from_str(field).map_err(|e| e.to_string())?))
     }

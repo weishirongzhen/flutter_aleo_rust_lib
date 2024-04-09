@@ -19,19 +19,17 @@ use crate::account::{Address, Encryptor, PrivateKeyCiphertext, Signature, ViewKe
 use crate::types::native::{CurrentNetwork, Environment, FromBytes, PrimeField, PrivateKeyNative, ToBytes};
 use core::{convert::TryInto, fmt, ops::Deref, str::FromStr};
 use rand::{rngs::StdRng, SeedableRng};
-use wasm_bindgen::prelude::*;
+
 
 /// Private key of an Aleo account
-#[wasm_bindgen]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PrivateKey(PrivateKeyNative);
 
-#[wasm_bindgen]
+
 impl PrivateKey {
     /// Generate a new private key using a cryptographically secure random number generator
     ///
     /// @returns {PrivateKey}
-    #[wasm_bindgen(constructor)]
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self(PrivateKeyNative::new(&mut StdRng::from_entropy()).unwrap())
@@ -94,7 +92,6 @@ impl PrivateKey {
     ///
     /// @param {string} secret Secret used to encrypt the private key
     /// @returns {PrivateKeyCiphertext | Error} Ciphertext representation of the private key
-    #[wasm_bindgen(js_name = newEncrypted)]
     pub fn new_encrypted(secret: &str) -> Result<PrivateKeyCiphertext, String> {
         let key = Self::new();
         let ciphertext =
@@ -107,7 +104,6 @@ impl PrivateKey {
     ///
     /// @param {string} secret Secret used to encrypt the private key
     /// @returns {PrivateKeyCiphertext | Error} Ciphertext representation of the private key
-    #[wasm_bindgen(js_name = toCiphertext)]
     pub fn to_ciphertext(&self, secret: &str) -> Result<PrivateKeyCiphertext, String> {
         let ciphertext =
             Encryptor::encrypt_private_key_with_secret(self, secret).map_err(|_| "Encryption failed".to_string())?;
@@ -119,7 +115,6 @@ impl PrivateKey {
     /// @param {PrivateKeyCiphertext} ciphertext Ciphertext representation of the private key
     /// @param {string} secret Secret originally used to encrypt the private key
     /// @returns {PrivateKey | Error} Private key
-    #[wasm_bindgen(js_name = fromPrivateKeyCiphertext)]
     pub fn from_private_key_ciphertext(ciphertext: &PrivateKeyCiphertext, secret: &str) -> Result<PrivateKey, String> {
         let private_key = Encryptor::decrypt_private_key_with_secret(ciphertext, secret)
             .map_err(|_| "Decryption failed".to_string())?;
@@ -144,6 +139,7 @@ impl From<&PrivateKey> for PrivateKeyNative {
         private_key.0
     }
 }
+
 impl FromStr for PrivateKey {
     type Err = anyhow::Error;
 
@@ -171,7 +167,7 @@ mod tests {
     use super::*;
 
     use rand::Rng;
-    use wasm_bindgen_test::*;
+
 
     const ITERATIONS: u64 = 1_000;
 
@@ -179,7 +175,7 @@ mod tests {
     const ALEO_VIEW_KEY: &str = "AViewKey1cxguxtKkjYnT9XDza9yTvVMxt6Ckb1Pv4ck1hppMzmCB";
     const ALEO_ADDRESS: &str = "aleo184vuwr5u7u0ha5f5k44067dd2uaqewxx6pe5ltha5pv99wvhfqxqv339h4";
 
-    #[wasm_bindgen_test]
+    #[test]
     pub fn test_sanity_check() {
         let private_key = PrivateKey::from_string(ALEO_PRIVATE_KEY).unwrap();
 
@@ -193,7 +189,7 @@ mod tests {
         assert_eq!(ALEO_ADDRESS, private_key.to_address().to_string());
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     pub fn test_new() {
         for _ in 0..ITERATIONS {
             // Generate a new private_key.
@@ -204,7 +200,7 @@ mod tests {
         }
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     pub fn test_from_seed_unchecked() {
         for _ in 0..ITERATIONS {
             // Sample a random seed.
@@ -216,7 +212,7 @@ mod tests {
         }
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     pub fn test_to_address() {
         for _ in 0..ITERATIONS {
             // Sample a new private key.
@@ -229,7 +225,7 @@ mod tests {
         }
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     pub fn test_signature() {
         for _ in 0..ITERATIONS {
             // Sample a new private key and message.

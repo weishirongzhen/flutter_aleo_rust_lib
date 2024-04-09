@@ -1,7 +1,7 @@
 name: rust_lib_flutter_aleo_rust_lib
 description: "Utility to build Rust code"
-version: 0.0.1-dev.1
-homepage: https://github.com/weishirongzhen/flutter_aleo_rust_lib
+version: 0.0.1
+publish_to: none
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

@@ -110,9 +110,8 @@ mod tests {
     use super::*;
 
     use snarkvm_console::prelude::TestRng;
-    use wasm_bindgen_test::*;
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_encryptor_encrypt_and_decrypt() {
         let mut rng = TestRng::default();
         let private_key = PrivateKeyNative::new(&mut rng).unwrap();
@@ -121,7 +120,7 @@ mod tests {
         assert_eq!(private_key, recovered_private_key);
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_encryptor_wrong_private_key_doesnt_decrypt() {
         let mut rng = TestRng::default();
         let private_key = PrivateKeyNative::new(&mut rng).unwrap();
@@ -130,7 +129,7 @@ mod tests {
         assert!(recovered_private_key.is_err())
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_encryptor_same_secret_doesnt_produce_same_ciphertext_on_different_runs() {
         let mut rng = TestRng::default();
         let private_key = PrivateKeyNative::new(&mut rng).unwrap();
@@ -144,7 +143,7 @@ mod tests {
         assert_eq!(recovered_key_1, recovered_key_2);
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_encryptor_private_keys_encrypted_with_different_passwords_match() {
         let mut rng = TestRng::default();
         let private_key = PrivateKeyNative::new(&mut rng).unwrap();
@@ -158,7 +157,7 @@ mod tests {
         assert_eq!(recovered_key_1, recovered_key_2);
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_encryptor_different_private_keys_encrypted_with_same_password_dont_match() {
         let mut rng = TestRng::default();
         let private_key = PrivateKeyNative::new(&mut rng).unwrap();

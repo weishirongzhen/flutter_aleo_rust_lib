@@ -2,10 +2,6 @@
 pub fn greet(name: String) -> String {
     format!("Hello, {name}!")
 }
-#[flutter_rust_bridge::frb(sync)]
-pub fn hello(a: String) -> String { a.repeat(2) }
-
-
 
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {
