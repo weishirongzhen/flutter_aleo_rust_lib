@@ -73,7 +73,6 @@ dependencies = [
  "once_cell",
  "rand",
  "serde_json",
- "snarkvm",
  "snarkvm-circuit-network",
  "snarkvm-console",
  "snarkvm-ledger-block",
