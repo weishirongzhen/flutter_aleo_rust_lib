@@ -41,13 +41,12 @@ dependencies = [
 [[package]]
 name = "aleo"
 version = "0.6.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "126b0214f61b2c84f7dd1cd415ac6d86a203916e89dab04979f7138d4c73fc84"
 dependencies = [
  "aleo-rust",
  "anyhow",
  "clap",
  "colored",
+ "hex",
  "num-format",
  "parking_lot",
  "rand",
@@ -66,8 +65,6 @@ dependencies = [
 [[package]]
 name = "aleo-rust"
 version = "0.6.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe4723d48327105712842eba239be4a7be906abb2577926fe4848b7cd33c907d"
 dependencies = [
  "anyhow",
  "clap",
@@ -1451,6 +1448,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
+name = "openssl-src"
+version = "300.2.3+3.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5cff92b6f71555b61bb9315f7c64da3ca43d87531622120fea0195fc761b4843"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "openssl-sys"
 version = "0.9.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1458,6 +1464,7 @@ checksum = "c597637d56fbc83893a35eb0dd04b2b8e7a50c91e64e9493e398b5df4fb45fa2"
 dependencies = [
  "cc",
  "libc",
+ "openssl-src",
  "pkg-config",
  "vcpkg",
 ]
@@ -1790,16 +1797,7 @@ dependencies = [
  "anyhow",
  "colored",
  "flutter_rust_bridge",
- "indexmap",
- "once_cell",
- "rand",
- "snarkvm-circuit-network",
- "snarkvm-console",
- "snarkvm-ledger-block",
- "snarkvm-ledger-query",
- "snarkvm-ledger-store",
- "snarkvm-parameters",
- "snarkvm-synthesizer",
+ "openssl",
 ]
 
 [[package]]

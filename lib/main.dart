@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_aleo_rust_lib/src/rust/api/aleo_api.dart';
+import 'package:flutter_aleo_rust_lib/src/rust/api/aleo_api.dart' as aleo;
 import 'package:flutter_aleo_rust_lib/src/rust/api/simple.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/frb_generated.dart';
+import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 
 import 'aleo/aleo_hd_key.dart';
 
@@ -20,17 +22,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late String pk;
-  String seed = "3664fbd2c2349a7e7b8dbcae438113ee05898c5b209383b1381b1d864253d60b3e52b47234b52fa9524b09f6c5ee46116910b710ae6fce8b9197573a08cd7c7b";
   String aleoTestnet3Url = "https://api.explorer.aleo.org/v1/testnet3";
+  bool transferring = false;
+  String transferId = "";
+  final testMnemonic =
+      "lesson maid remove boring swift floor produce crouch kangaroo action kick pole";
 
-  /// APrivateKey1zkp96vBfhFFeo6hHrDkdYwxTjJSmL8S7cgdezbrD5c7Tmiw
-  /// AViewKey1gFMrMPFBZZufJTwZULkuQejjsQZ9cp3y3ysiV8t55yRt
-  /// aleo1m5tkjhn8586xgnwcq3mcmffp9gmuyeq2fdz6lsj647fsckcqzygqxphn62
   @override
   void initState() {
-    pk = privateKeyNew();
-    log("viewwkey = ${toViewKey(privateKey: "APrivateKey1zkp4rNXyNvjMggBrqd3kJAjjPHfUEdmdo1xApZB8BVu5buJ")}");
     super.initState();
   }
 
@@ -44,33 +43,72 @@ class _MyAppState extends State<MyApp> {
           children: [
             Text(
                 'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
-            Text('private key: `$pk`'),
-            Text('view key: `${toViewKey(privateKey: "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8")}`'),
-            Text('address: `${toAddress(privateKey: pk)}`'),
-            Text('derivePath account index 0: `${dp()}`'),
+            const Divider(),
+            Text("words: $testMnemonic"),
+            const Divider(),
             Text(
-                'sign output: `${sign(messageBytes: "1".codeUnits, privateKey: pk)}`'),
+                'private key1: `${privateKeyFromDerivePath(testMnemonic, 0)}`'),
+            Text('view key1: `${viewKeyFromDerivePath(testMnemonic, 0)}'),
+            Text('address1: `${addressFromDerivePath(testMnemonic, 0)}`'),
+            const Divider(),
+            Text(
+                'private key2: `${privateKeyFromDerivePath(testMnemonic, 1)}`'),
+            Text('view key2: `${viewKeyFromDerivePath(testMnemonic, 1)}'),
+            Text('address2: `${addressFromDerivePath(testMnemonic, 1)}`'),
+            ElevatedButton(
+                onPressed: () {
+                  buildTransfer();
+                },
+                child: const Text("transfer")),
 
-            ElevatedButton(onPressed: (){
-
-              buildTransfer();
-            }, child: Text("Test")),
-
+            if(transferring)
+            CircularProgressIndicator(),
+            Text('id: `$transferId`'),
           ],
         ),
       ),
     );
   }
 
-  String dp() {
-    final key = derivePath("m/44'/0'/0'/0'", seed);
-    final pk = fromSeedUnchecked(seed: key.key!);
+  void buildTransfer() async {
+    setState(() {
+      transferring = true;
+    });
 
-    return pk;
+    final res = await aleo.transfer(
+      recipient:
+          "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
+      transferType: "public",
+      amount: 200000000,
+      fee: 0.0,
+      privateFee: false,
+      privateKey: "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8",
+    );
+
+    print("transfer id = $res");
+    setState(() {
+      transferring = false;
+      transferId = res;
+    });
   }
 
-  void buildTransfer(){
+  String viewKeyFromDerivePath(String mnemonic, int index) {
+    return aleo.toViewKey(
+        privateKey: privateKeyFromDerivePath(mnemonic, index));
+  }
 
-    // transfer(privateKey: '', amountCredits: 0.0, recipient: '', transferType: '', feeCredits: 0.0);
+  String addressFromDerivePath(String mnemonic, int index) {
+    return aleo.toAddress(
+        privateKey: privateKeyFromDerivePath(mnemonic, index));
+  }
+
+  String privateKeyFromDerivePath(String mnemonic, int index) {
+    /// aleo hd account derive path m/44'/0'/<account_index>'/0' and default account_index = 0
+
+    final path = "m/44'/0'/$index'/0'";
+    final m = Mnemonic.fromSentence(mnemonic, Language.english);
+    final seedHex = hex.encode(m.seed);
+    final keys = derivePath(path, seedHex);
+    return aleo.privateKeyFromSeed(seed: keys.key!);
   }
 }

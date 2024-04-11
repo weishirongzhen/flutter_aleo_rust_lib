@@ -6,21 +6,34 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String privateKeyNew({dynamic hint}) =>
-    RustLib.instance.api.privateKeyNew(hint: hint);
-
-String fromSeedUnchecked({required List<int> seed, dynamic hint}) =>
-    RustLib.instance.api.fromSeedUnchecked(seed: seed, hint: hint);
-
-String toAddress({required String privateKey, dynamic hint}) =>
-    RustLib.instance.api.toAddress(privateKey: privateKey, hint: hint);
+String privateKeyFromSeed({required List<int> seed, dynamic hint}) =>
+    RustLib.instance.api.privateKeyFromSeed(seed: seed, hint: hint);
 
 String toViewKey({required String privateKey, dynamic hint}) =>
     RustLib.instance.api.toViewKey(privateKey: privateKey, hint: hint);
 
-String sign(
-        {required List<int> messageBytes,
+String toAddress({required String privateKey, dynamic hint}) =>
+    RustLib.instance.api.toAddress(privateKey: privateKey, hint: hint);
+
+Future<String> transfer(
+        {required String recipient,
+        required String transferType,
+        required double amount,
+        required double fee,
+        required bool privateFee,
         required String privateKey,
+        String? amountRecord,
+        String? feeRecord,
+        String? endpoint,
         dynamic hint}) =>
-    RustLib.instance.api
-        .sign(messageBytes: messageBytes, privateKey: privateKey, hint: hint);
+    RustLib.instance.api.transfer(
+        recipient: recipient,
+        transferType: transferType,
+        amount: amount,
+        fee: fee,
+        privateFee: privateFee,
+        privateKey: privateKey,
+        amountRecord: amountRecord,
+        feeRecord: feeRecord,
+        endpoint: endpoint,
+        hint: hint);

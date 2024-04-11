@@ -1,39 +1,37 @@
-use crate::account::{PrivateKey};
-use anyhow;
+use aleo::commands::AccountNew;
 use crate::aleo_archived_api::*;
 
 
-// 0.3.1
 #[flutter_rust_bridge::frb(sync)]
-pub fn private_key_new() -> String { return PrivateKey::new().to_string(); }
-
-#[flutter_rust_bridge::frb(sync)]
-pub fn from_seed_unchecked(seed: Vec<u8>) -> String {
-    // 16 进制转 u8 的代码， 这里直接传递 u8，所以不需要
-    // let bytes = hex::decode(seed).unwrap();
-    // let bytes_slice: &[u8] = &bytes;
-
-    return PrivateKey::from_seed_unchecked(&seed).to_string();
-}
-
-#[flutter_rust_bridge::frb(sync)]
-pub fn to_address(private_key: String) -> String {
-    return PrivateKey::from_string(&private_key).unwrap().to_address().to_string();
+pub fn private_key_from_seed(seed: Vec<u8>) -> String {
+    let pk = AccountNew::private_key_from_seed(&seed);
+    return AccountNew::private_key_to_string(pk);
 }
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn to_view_key(private_key: String) -> String {
-    return PrivateKey::from_string(&private_key).unwrap().to_view_key().to_string();
+    let pk = AccountNew::private_key_from_string(&private_key);
+    let view_key = AccountNew::private_key_to_view_key(pk);
+    return view_key.to_string();
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn sign(message_bytes: Vec<u8>, private_key: String) -> String {
-    let pk = PrivateKey::from_string(&private_key).unwrap();
-    return pk.sign(&message_bytes).to_string();
+pub fn to_address(private_key: String) -> String {
+    let pk = AccountNew::private_key_from_string(&private_key);
+    let view_key = AccountNew::private_key_to_view_key(pk);
+    let address = AccountNew::view_key_to_address(view_key);
+    return address.to_string();
 }
 
 
-#[flutter_rust_bridge::frb(sync)]
+//
+// #[flutter_rust_bridge::frb(sync)]
+// pub fn sign(message_bytes: Vec<u8>, private_key: String) -> String {
+//     let pk = PrivateKey::from_string(&private_key).unwrap();
+//     return pk.sign(&message_bytes).to_string();
+// }
+
+
 pub fn transfer(recipient: String,
                 transfer_type: String,
                 amount: f64,
@@ -46,32 +44,45 @@ pub fn transfer(recipient: String,
     return do_transfer(recipient, transfer_type, amount, fee, private_fee, private_key, amount_record, fee_record, endpoint).unwrap();
 }
 
-// #[flutter_rust_bridge::frb(sync)]
-// pub fn transfer(private_key: String,
-//                 amount_credits: f64,
-//                 recipient: String,
-//                 transfer_type: String,
-//                 amount_record: Option<String>,
-//                 fee_credits: f64,
-//                 fee_record: Option<String>,
-//                 url: Option<String>,
-//                 transfer_proving_key: Option<String>,
-//                 transfer_verifying_key: Option<String>,
-//                 fee_proving_key: Option<String>,
-//                 fee_verifying_key: Option<String>,
-//                 offline_query: Option<String>,
-// ) -> String {
-//     // let pk = PrivateKey::from_string(&private_key).unwrap();
-//     let pk = PrivateKey::from_string("APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8").unwrap();
-//
-//     let v = executor::block_on(ProgramManager::transfer(&pk, 0.1, "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x", "public", None, 0.29, None, None, None, None, None, None, None));
-//     return v.unwrap().to_string();
-//
-//     // ProgramManager::transfer(&pk, amount_credits, &recipient, &transfer_type, None, fee_credits, None, url, None, None, None, None, None);
-//     // return result.unwrap().to_string();
-// }
+mod test {
+    use std::time::SystemTime;
+    use aleo::commands::AccountNew;
+    use aleo::CurrentNetwork;
+    use aleo_rust::PrivateKey;
+    use crate::api::aleo_api::*;
 
+    #[test]
+    fn account_new_all_fn() {
+        let bytes = AccountNew::hex_to_u8_bytes("f4d5f3fcc76853544c434423fc06de9daec8e8f5123127b5ee2743c68a21e41d");
+        let pk = private_key_from_seed(bytes);
+        let view_key = to_view_key(pk.clone());
+        let address = to_address(pk.clone());
+        println!("pk = {}", pk.clone());
+        println!("view_key = {}", view_key);
+        println!("address = {}", address);
+    }
 
+    #[test]
+    fn trr() {
+        let sys_time1 = SystemTime::now();
+        println!("开始 {:?}", sys_time1);
+        let id = transfer(
+            "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x".to_string(),
+            "public".to_string(),
+            100000000.0,
+            0.001,
+            false,
+            "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8".to_string(),
+            None, None, None,
+        );
+        let sys_time2 = SystemTime::now();
+        let difference = sys_time2.duration_since(sys_time1)
+            .expect("Clock may have gone backwards");
+        println!("结束{:?}", sys_time2);
+        println!("id = {}", id);
+        println!("{:?}", difference);
+    }
+}
 
 
 

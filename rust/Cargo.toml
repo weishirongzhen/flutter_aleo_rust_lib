@@ -8,53 +8,12 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.0.0-dev.30"
-
-
-[dependencies.snarkvm-circuit-network]
-version = "=0.16.19"
-
-[dependencies.snarkvm-console]
-version = "=0.16.19"
-
-[dependencies.snarkvm-ledger-block]
-version = "=0.16.19"
-
-[dependencies.snarkvm-ledger-query]
-version = "=0.16.19"
-features = ["async"]
-
-[dependencies.snarkvm-ledger-store]
-version = "=0.16.19"
-
-[dependencies.snarkvm-parameters]
-version = "=0.16.19"
-
-[dependencies.snarkvm-synthesizer]
-version = "=0.16.19"
-features = ["async"]
-
-[dependencies.rand]
-version = "0.8"
-
-
-[dependencies.anyhow]
-version = "1.0"
-
-[dependencies.once_cell]
-version = "1.18.0"
-
-[dependencies.indexmap]
-version = "2.0.0"
-
-[dependencies.snarkvm-wasm]
-version = "0.16.19"
-features = [ "console", "fields", "utilities" ]
-
-[dependencies.aleo]
-version = "0.6.8"
-[dependencies.aleo-rust]
-version = "0.6.8"
+aleo = {path = "../aleo-rust-archived"}
+aleo-rust = {path = "../aleo-rust-archived/rust"}
+openssl = { version = "0.10", features = ["vendored"] }
 
 [dependencies.colored]
 version = "2"
 
+[dependencies.anyhow]
+version = "1.0"

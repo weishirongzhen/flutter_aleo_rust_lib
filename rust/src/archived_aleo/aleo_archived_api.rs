@@ -1,5 +1,6 @@
 use std::str::FromStr;
-use aleo:: {helpers::TransferTypeArg, CurrentNetwork};
+use std::time::SystemTime;
+use aleo::{helpers::TransferTypeArg, CurrentNetwork};
 use aleo_rust::{
     Address,
     AleoAPIClient,
@@ -27,11 +28,8 @@ pub fn do_transfer(
     amount_record: Option<String>,
     fee_record: Option<String>,
     endpoint: Option<String>,
-) -> Result<String>{
-
-
+) -> Result<String> {
     let transfer_type = TransferTypeArg::Public;
-
 
 
     // Convert transfer amount and fee to microcredits
@@ -51,17 +49,17 @@ pub fn do_transfer(
     // Setup the API client to use configured peer or default to https://api.explorer.aleo.org/v1/testnet3
     let api_client =
         endpoint
-        .map_or_else(
-            || {
-                println!(
-                    "Using default peer: {}",
-                    "https://api.explorer.aleo.org/v1/testnet3".bright_blue().bold()
-                );
-                Ok(AleoAPIClient::<CurrentNetwork>::testnet3())
-            },
-            |peer| AleoAPIClient::<CurrentNetwork>::new(&peer, "testnet3"),
-        )
-        .map_err(|e| anyhow!("{:?}", e))?;
+            .map_or_else(
+                || {
+                    println!(
+                        "Using default peer: {}",
+                        "https://api.explorer.aleo.org/v1/testnet3".bright_blue().bold()
+                    );
+                    Ok(AleoAPIClient::<CurrentNetwork>::testnet3())
+                },
+                |peer| AleoAPIClient::<CurrentNetwork>::new(&peer, "testnet3"),
+            )
+            .map_err(|e| anyhow!("{:?}", e))?;
 
     // Create the program manager
     let program_manager = ProgramManager::<CurrentNetwork>::new(
@@ -108,7 +106,7 @@ pub fn do_transfer(
     //         }
     //     }
     // };
-
+    println!("计时1 {:?}", SystemTime::now());
     // Execute the transfer
     let transfer = program_manager.transfer(
         amount_microcredits,
@@ -119,6 +117,7 @@ pub fn do_transfer(
         None,
         None,
     );
+    println!("计时2 {:?}", SystemTime::now());
 
     // Inform the user of the result of the transfer
     if transfer.is_err() {
