@@ -65,6 +65,8 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A068062FFAB1CD31C639F5F2 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A545F5FC2BC93AD5007621DF /* libcurl.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.4.dylib; path = ../../../../../opt/homebrew/Cellar/curl/8.7.1/lib/libcurl.4.dylib; sourceTree = "<group>"; };
+		A545F6022BC94020007621DF /* curl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = curl.framework; path = "../../../Downloads/curl.xcframework/ios-arm64/curl.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +99,6 @@
 				4379582FC4444A3C38AA579D /* Pods-RunnerTests.release.xcconfig */,
 				3F5E330C9421EABB8433E151 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -159,6 +160,8 @@
 		B74E274B0B5350030A35DCAA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A545F6022BC94020007621DF /* curl.framework */,
+				A545F5FC2BC93AD5007621DF /* libcurl.4.dylib */,
 				812B2BCB1B63A828AD0F882C /* Pods_Runner.framework */,
 				A068062FFAB1CD31C639F5F2 /* Pods_RunnerTests.framework */,
 			);
@@ -343,7 +346,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		A16EC22D9BB7FBBC2A0A033C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -477,6 +480,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/curl/8.7.1/lib,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.flutterAleoRustLib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -661,6 +668,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/curl/8.7.1/lib,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.flutterAleoRustLib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -683,6 +694,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/curl/8.7.1/lib,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.flutterAleoRustLib;
 				PRODUCT_NAME = "$(TARGET_NAME)";

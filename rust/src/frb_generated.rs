@@ -39,15 +39,16 @@ flutter_rust_bridge::frb_generated_default_handler!();
 // Section: wire_funcs
 
 fn wire_private_key_from_seed_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "private_key_from_seed",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -61,22 +62,25 @@ fn wire_private_key_from_seed_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_seed = <Vec<u8>>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::aleo_api::private_key_from_seed(api_seed))
-            })())
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::aleo_api::private_key_from_seed(api_seed))
+                })())
+            }
         },
     )
 }
 fn wire_to_address_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "to_address",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -90,22 +94,25 @@ fn wire_to_address_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_private_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::aleo_api::to_address(api_private_key))
-            })())
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::aleo_api::to_address(api_private_key))
+                })())
+            }
         },
     )
 }
 fn wire_to_view_key_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "to_view_key",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -119,9 +126,11 @@ fn wire_to_view_key_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_private_key = <String>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::aleo_api::to_view_key(api_private_key))
-            })())
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::aleo_api::to_view_key(api_private_key))
+                })())
+            }
         },
     )
 }
@@ -311,6 +320,9 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
+        1 => wire_private_key_from_seed_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire_to_address_impl(port, ptr, rust_vec_len, data_len),
+        2 => wire_to_view_key_impl(port, ptr, rust_vec_len, data_len),
         4 => wire_transfer_impl(port, ptr, rust_vec_len, data_len),
         6 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
@@ -325,9 +337,6 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire_private_key_from_seed_impl(ptr, rust_vec_len, data_len),
-        3 => wire_to_address_impl(ptr, rust_vec_len, data_len),
-        2 => wire_to_view_key_impl(ptr, rust_vec_len, data_len),
         5 => wire_greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }

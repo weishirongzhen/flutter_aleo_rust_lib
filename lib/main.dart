@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:convert/convert.dart';
@@ -24,7 +25,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String aleoTestnet3Url = "https://api.explorer.aleo.org/v1/testnet3";
   bool transferring = false;
-  String transferId = "";
+  int seconds = 0;
+  String transferId = "waiting";
   final testMnemonic =
       "lesson maid remove boring swift floor produce crouch kangaroo action kick pole";
 
@@ -46,23 +48,34 @@ class _MyAppState extends State<MyApp> {
             const Divider(),
             Text("words: $testMnemonic"),
             const Divider(),
-            Text(
-                'private key1: `${privateKeyFromDerivePath(testMnemonic, 0)}`'),
-            Text('view key1: `${viewKeyFromDerivePath(testMnemonic, 0)}'),
-            Text('address1: `${addressFromDerivePath(testMnemonic, 0)}`'),
+            FutureBuilder<String>(
+                future: privateKeyFromDerivePath(testMnemonic, 0),
+                builder: (context, snapshot) {
+                  return Text('private key1: `${snapshot.data ?? ""}`');
+                }),
+            FutureBuilder<String>(
+                future: viewKeyFromDerivePath(testMnemonic, 0),
+                builder: (context, snapshot) {
+                  return Text('view key1: `${snapshot.data ?? ""}');
+                }),
+            FutureBuilder<String>(
+                future: addressFromDerivePath(testMnemonic, 0),
+                builder: (context, snapshot) {
+                  return Text('address1: `${snapshot.data ?? ""}`');
+                }),
             const Divider(),
-            Text(
-                'private key2: `${privateKeyFromDerivePath(testMnemonic, 1)}`'),
-            Text('view key2: `${viewKeyFromDerivePath(testMnemonic, 1)}'),
-            Text('address2: `${addressFromDerivePath(testMnemonic, 1)}`'),
+            // Text(
+            //     'private key2: `${privateKeyFromDerivePath(testMnemonic, 1)}`'),
+            // Text('view key2: `${viewKeyFromDerivePath(testMnemonic, 1)}'),
+            // Text('address2: `${addressFromDerivePath(testMnemonic, 1)}`'),
             ElevatedButton(
                 onPressed: () {
                   buildTransfer();
                 },
                 child: const Text("transfer")),
 
-            if(transferring)
-            CircularProgressIndicator(),
+            if (transferring) CircularProgressIndicator(),
+            Text("time use: ${seconds ~/ 1000} s"),
             Text('id: `$transferId`'),
           ],
         ),
@@ -71,10 +84,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void buildTransfer() async {
+    print("start transferring");
     setState(() {
       transferring = true;
+      transferId = "waiting";
     });
-
+    seconds = DateTime.now().millisecondsSinceEpoch;
     final res = await aleo.transfer(
       recipient:
           "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
@@ -89,20 +104,21 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       transferring = false;
       transferId = res;
+      seconds = DateTime.now().millisecondsSinceEpoch - seconds;
     });
   }
 
-  String viewKeyFromDerivePath(String mnemonic, int index) {
+  Future<String> viewKeyFromDerivePath(String mnemonic, int index) async {
     return aleo.toViewKey(
-        privateKey: privateKeyFromDerivePath(mnemonic, index));
+        privateKey: await privateKeyFromDerivePath(mnemonic, index));
   }
 
-  String addressFromDerivePath(String mnemonic, int index) {
+  Future<String> addressFromDerivePath(String mnemonic, int index) async {
     return aleo.toAddress(
-        privateKey: privateKeyFromDerivePath(mnemonic, index));
+        privateKey: await privateKeyFromDerivePath(mnemonic, index));
   }
 
-  String privateKeyFromDerivePath(String mnemonic, int index) {
+  Future<String> privateKeyFromDerivePath(String mnemonic, int index) async {
     /// aleo hd account derive path m/44'/0'/<account_index>'/0' and default account_index = 0
 
     final path = "m/44'/0'/$index'/0'";

@@ -65,11 +65,11 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  String privateKeyFromSeed({required List<int> seed, dynamic hint});
+  Future<String> privateKeyFromSeed({required List<int> seed, dynamic hint});
 
-  String toAddress({required String privateKey, dynamic hint});
+  Future<String> toAddress({required String privateKey, dynamic hint});
 
-  String toViewKey({required String privateKey, dynamic hint});
+  Future<String> toViewKey({required String privateKey, dynamic hint});
 
   Future<String> transfer(
       {required String recipient,
@@ -97,12 +97,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  String privateKeyFromSeed({required List<int> seed, dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<String> privateKeyFromSeed({required List<int> seed, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(seed, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -121,12 +122,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String toAddress({required String privateKey, dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<String> toAddress({required String privateKey, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(privateKey, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -145,12 +147,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String toViewKey({required String privateKey, dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<String> toViewKey({required String privateKey, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(privateKey, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,

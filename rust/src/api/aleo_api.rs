@@ -2,20 +2,20 @@ use aleo::commands::AccountNew;
 use crate::aleo_archived_api::*;
 
 
-#[flutter_rust_bridge::frb(sync)]
+// #[flutter_rust_bridge::frb(sync)]
 pub fn private_key_from_seed(seed: Vec<u8>) -> String {
     let pk = AccountNew::private_key_from_seed(&seed);
     return AccountNew::private_key_to_string(pk);
 }
 
-#[flutter_rust_bridge::frb(sync)]
+// #[flutter_rust_bridge::frb(sync)]
 pub fn to_view_key(private_key: String) -> String {
     let pk = AccountNew::private_key_from_string(&private_key);
     let view_key = AccountNew::private_key_to_view_key(pk);
     return view_key.to_string();
 }
 
-#[flutter_rust_bridge::frb(sync)]
+// #[flutter_rust_bridge::frb(sync)]
 pub fn to_address(private_key: String) -> String {
     let pk = AccountNew::private_key_from_string(&private_key);
     let view_key = AccountNew::private_key_to_view_key(pk);
@@ -31,7 +31,7 @@ pub fn to_address(private_key: String) -> String {
 //     return pk.sign(&message_bytes).to_string();
 // }
 
-
+//#[flutter_rust_bridge::frb(sync)]
 pub fn transfer(recipient: String,
                 transfer_type: String,
                 amount: f64,

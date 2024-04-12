@@ -6,13 +6,13 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String privateKeyFromSeed({required List<int> seed, dynamic hint}) =>
+Future<String> privateKeyFromSeed({required List<int> seed, dynamic hint}) =>
     RustLib.instance.api.privateKeyFromSeed(seed: seed, hint: hint);
 
-String toViewKey({required String privateKey, dynamic hint}) =>
+Future<String> toViewKey({required String privateKey, dynamic hint}) =>
     RustLib.instance.api.toViewKey(privateKey: privateKey, hint: hint);
 
-String toAddress({required String privateKey, dynamic hint}) =>
+Future<String> toAddress({required String privateKey, dynamic hint}) =>
     RustLib.instance.api.toAddress(privateKey: privateKey, hint: hint);
 
 Future<String> transfer(
