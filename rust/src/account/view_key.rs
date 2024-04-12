@@ -19,13 +19,13 @@ use crate::record::RecordCiphertext;
 
 use crate::types::native::ViewKeyNative;
 use core::{convert::TryFrom, fmt, ops::Deref, str::FromStr};
+use wasm_bindgen::prelude::*;
 
-
-
+#[wasm_bindgen]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ViewKey(ViewKeyNative);
 
-
+#[wasm_bindgen]
 impl ViewKey {
     /// Create a new view key from a private key
     ///
@@ -97,7 +97,7 @@ impl Deref for ViewKey {
 mod tests {
     use super::*;
 
-
+    use wasm_bindgen_test::*;
 
     const RECORD_PLAINTEXT: &str = r"{
   owner: aleo1j7qxyunfldj2lp8hsvy7mw5k8zaqgjfyr72x2gh3x4ewgae8v5gscf5jh3.private,
@@ -108,7 +108,7 @@ mod tests {
     const OWNER_VIEW_KEY: &str = "AViewKey1ccEt8A2Ryva5rxnKcAbn7wgTaTsb79tzkKHFpeKsm9NX";
     const NON_OWNER_VIEW_KEY: &str = "AViewKey1e2WyreaH5H4RBcioLL2GnxvHk5Ud46EtwycnhTdXLmXp";
 
-    #[test]
+    #[wasm_bindgen_test]
     pub fn test_from_private_key() {
         let given_private_key = "APrivateKey1zkp4RyQ8Utj7aRcJgPQGEok8RMzWwUZzBhhgX6rhmBT8dcP";
         let given_view_key = "AViewKey1i3fn5SECcVBtQMCVtTPSvdApoMYmg3ToJfNDfgHJAuoD";
@@ -117,7 +117,7 @@ mod tests {
         assert_eq!(given_view_key, view_key.to_string());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     pub fn test_decrypt_success() {
         let view_key = ViewKey::from_string(OWNER_VIEW_KEY);
         let plaintext = view_key.decrypt(OWNER_CIPHERTEXT);
@@ -126,7 +126,7 @@ mod tests {
         assert_eq!(RECORD_PLAINTEXT, plaintext.unwrap())
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     pub fn test_decrypt_fails() {
         let ciphertext = RecordCiphertext::from_str(OWNER_CIPHERTEXT).map_err(|error| error.to_string()).unwrap();
         let incorrect_view_key = ViewKey::from_string(NON_OWNER_VIEW_KEY);

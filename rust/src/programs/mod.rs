@@ -14,8 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with the Aleo SDK library. If not, see <https://www.gnu.org/licenses/>.
 
-pub mod record_ciphertext;
-pub use record_ciphertext::*;
+mod macros;
 
-pub mod record_plaintext;
-pub use record_plaintext::*;
+pub mod execution;
+pub use execution::*;
+
+pub mod keypair;
+pub use keypair::*;
+
+// #[cfg(feature = "browser")]
+pub mod manager;
+// #[cfg(feature = "browser")]
+pub use manager::*;
+
+pub mod offline_query;
+pub use offline_query::*;
+
+pub mod program;
+pub use program::*;
+
+pub mod proving_key;
+pub use proving_key::*;
+
+pub mod response;
+pub use response::*;
+
+pub mod transaction;
+pub use transaction::*;
+
+pub mod verifying_key;
+pub use verifying_key::*;

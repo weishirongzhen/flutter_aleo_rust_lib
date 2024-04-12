@@ -9,18 +9,23 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 String privateKeyNew({dynamic hint}) =>
     RustLib.instance.api.privateKeyNew(hint: hint);
 
-String fromSeedUnchecked({required List<int> seed, dynamic hint}) =>
-    RustLib.instance.api.fromSeedUnchecked(seed: seed, hint: hint);
+String privateKeyFromSeed({required List<int> seed, dynamic hint}) =>
+    RustLib.instance.api.privateKeyFromSeed(seed: seed, hint: hint);
 
-String toAddress({required String privateKey, dynamic hint}) =>
-    RustLib.instance.api.toAddress(privateKey: privateKey, hint: hint);
+String privateKeyToViewKey({required String privateKey, dynamic hint}) =>
+    RustLib.instance.api
+        .privateKeyToViewKey(privateKey: privateKey, hint: hint);
 
-String toViewKey({required String privateKey, dynamic hint}) =>
-    RustLib.instance.api.toViewKey(privateKey: privateKey, hint: hint);
+String privateKeyToAddress({required String privateKey, dynamic hint}) =>
+    RustLib.instance.api
+        .privateKeyToAddress(privateKey: privateKey, hint: hint);
 
-String sign(
+String signMessage(
         {required List<int> messageBytes,
         required String privateKey,
         dynamic hint}) =>
-    RustLib.instance.api
-        .sign(messageBytes: messageBytes, privateKey: privateKey, hint: hint);
+    RustLib.instance.api.signMessage(
+        messageBytes: messageBytes, privateKey: privateKey, hint: hint);
+
+Future<String> buildTransaction({dynamic hint}) =>
+    RustLib.instance.api.buildTransaction(hint: hint);

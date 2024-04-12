@@ -6,6 +6,11 @@ pub mod account;
 
 pub use account::*;
 
+
+pub mod programs;
+
+pub use programs::*;
+
 pub mod types;
 
 pub use types::Field;
@@ -17,6 +22,10 @@ use types::native;
 use std::str::FromStr;
 
 use types::native::RecordPlaintextNative;
+
+pub fn log(s: &str){
+    println!("wtf {}",s);
+}
 
 pub trait Credits {
     /// Get the amount of credits in the record if the record possesses Aleo credits
@@ -39,5 +48,55 @@ impl Credits for RecordPlaintextNative {
             }
             _ => Err("The record provided does not contain a microcredits field".to_string()),
         }
+    }
+}
+
+mod test {
+
+
+    // lesson maid remove boring swift floor produce crouch kangaroo action kick pole
+    // root seed: 5bb185ddba9203bc4af35877ee5545b2247c633031dc8df733c72cd2ea5b0011ba5b14371916305d7c20e845a6286842a645475de84c8332f90c5e3db6eafebc
+    // index 0 seed: 6ee24c8b8a66957256b6ff2959d7a882a7791df6fb9049427e670dc7fb6e42dd --  private key: APrivateKey1zkp8a8td4dUmwEh4uiejD2yZdj4a6Ttp7uEiwXPRazfANeJ
+    // index 1 seed: eee3c5c60eb4bbdbc61340e79047ca412811cbc7d5058c93d0bab6ca95a3ab42 --  private key: APrivateKey1zkpHj3e8S4AGVvCjFheuEHPz6ukSbrnMwa8yTJXmRhK8V9K
+
+    use std::result;
+    use crate::{PrivateKey, ProgramManager};
+
+    #[test]
+    fn private_key_from_seed() {
+        let seed = "6ee24c8b8a66957256b6ff2959d7a882a7791df6fb9049427e670dc7fb6e42dd".to_string();
+
+        let bytes = hex::decode(seed).unwrap();
+
+        let pk = PrivateKey::from_seed_unchecked(&bytes);
+
+        println!("private key = {}", pk.to_string())
+    }
+
+    #[tokio::test]
+    async fn transfer() {
+        let seed = "6ee24c8b8a66957256b6ff2959d7a882a7791df6fb9049427e670dc7fb6e42dd".to_string();
+
+        let bytes = hex::decode(seed).unwrap();
+
+        let pk = PrivateKey::from_seed_unchecked(&bytes);
+
+        let result = ProgramManager::transfer(
+            &pk,
+            10000f64,
+            "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
+            "public",
+            None,
+            0.1,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        ).await;
+
+        println!("result {:?}",result.unwrap());
     }
 }

@@ -21,7 +21,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late String pk;
-  String seed = "3664fbd2c2349a7e7b8dbcae438113ee05898c5b209383b1381b1d864253d60b3e52b47234b52fa9524b09f6c5ee46116910b710ae6fce8b9197573a08cd7c7b";
+  String seed =
+      "3664fbd2c2349a7e7b8dbcae438113ee05898c5b209383b1381b1d864253d60b3e52b47234b52fa9524b09f6c5ee46116910b710ae6fce8b9197573a08cd7c7b";
   String aleoTestnet3Url = "https://api.explorer.aleo.org/v1/testnet3";
 
   /// APrivateKey1zkp96vBfhFFeo6hHrDkdYwxTjJSmL8S7cgdezbrD5c7Tmiw
@@ -30,7 +31,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     pk = privateKeyNew();
-    log("viewwkey = ${toViewKey(privateKey: "APrivateKey1zkp4rNXyNvjMggBrqd3kJAjjPHfUEdmdo1xApZB8BVu5buJ")}");
+    log("viewwkey = ${privateKeyToViewKey(privateKey: "APrivateKey1zkp4rNXyNvjMggBrqd3kJAjjPHfUEdmdo1xApZB8BVu5buJ")}");
     super.initState();
   }
 
@@ -45,17 +46,17 @@ class _MyAppState extends State<MyApp> {
             Text(
                 'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
             Text('private key: `$pk`'),
-            Text('view key: `${toViewKey(privateKey: "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8")}`'),
-            Text('address: `${toAddress(privateKey: pk)}`'),
+            Text(
+                'view key: `${privateKeyToViewKey(privateKey: "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8")}`'),
+            Text('address: `${privateKeyToAddress(privateKey: pk)}`'),
             Text('derivePath account index 0: `${dp()}`'),
             Text(
-                'sign output: `${sign(messageBytes: "1".codeUnits, privateKey: pk)}`'),
-
-            ElevatedButton(onPressed: (){
-
-              buildTransfer();
-            }, child: Text("Test")),
-
+                'sign output: `${signMessage(messageBytes: "1".codeUnits, privateKey: pk)}`'),
+            ElevatedButton(
+                onPressed: () {
+                  buildTransfer();
+                },
+                child: Text("Test")),
           ],
         ),
       ),
@@ -64,13 +65,13 @@ class _MyAppState extends State<MyApp> {
 
   String dp() {
     final key = derivePath("m/44'/0'/0'/0'", seed);
-    final pk = fromSeedUnchecked(seed: key.key!);
+    final pk = privateKeyFromSeed(seed: key.key!);
 
     return pk;
   }
 
-  void buildTransfer(){
-
-    // transfer(privateKey: '', amountCredits: 0.0, recipient: '', transferType: '', feeCredits: 0.0);
+  void buildTransfer() async {
+    final tx = await buildTransaction();
+    log("wtf tx = $tx");
   }
 }

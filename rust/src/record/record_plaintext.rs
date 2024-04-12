@@ -18,12 +18,16 @@ use crate::{account::PrivateKey, types::Field, Credits};
 
 use crate::types::native::{IdentifierNative, ProgramIDNative, RecordPlaintextNative};
 use std::{ops::Deref, str::FromStr};
+use wasm_bindgen::prelude::*;
 
 /// Plaintext representation of an Aleo record
+#[wasm_bindgen]
 #[derive(Clone)]
 pub struct RecordPlaintext(RecordPlaintextNative);
 
+#[wasm_bindgen]
 impl RecordPlaintext {
+    #[wasm_bindgen]
     pub fn commitment(&self, program_id: &str, record_name: &str) -> Result<Field, String> {
         Ok(Field::from(
             self.to_commitment(
@@ -40,6 +44,7 @@ impl RecordPlaintext {
     ///
     /// @param {string} record String representation of a plaintext representation of an Aleo record
     /// @returns {RecordPlaintext | Error} Record plaintext
+    #[wasm_bindgen(js_name = fromString)]
     pub fn from_string(record: &str) -> Result<RecordPlaintext, String> {
         Self::from_str(record).map_err(|_| "The record plaintext string provided was invalid".into())
     }
@@ -48,6 +53,7 @@ impl RecordPlaintext {
     ///
     /// @returns {string} String representation of the record plaintext
     #[allow(clippy::inherent_to_string)]
+    #[wasm_bindgen(js_name = toString)]
     pub fn to_string(&self) -> String {
         self.0.to_string()
     }
@@ -62,6 +68,7 @@ impl RecordPlaintext {
     /// Returns the nonce of the record. This can be used to uniquely identify a record.
     ///
     /// @returns {string} Nonce of the record
+    #[wasm_bindgen(js_name = nonce)]
     pub fn nonce(&self) -> String {
         self.0.nonce().to_string()
     }
@@ -72,6 +79,7 @@ impl RecordPlaintext {
     /// @param {string} program_id Program ID of the program that the record is associated with
     /// @param {string} record_name Name of the record
     /// @returns {string | Error} Serial number of the record
+    #[wasm_bindgen(js_name = serialNumberString)]
     pub fn serial_number_string(
         &self,
         private_key: &PrivateKey,
@@ -112,6 +120,7 @@ impl Deref for RecordPlaintext {
 mod tests {
     use super::*;
 
+    use wasm_bindgen_test::wasm_bindgen_test;
 
     const RECORD: &str = r"{
   owner: aleo1j7qxyunfldj2lp8hsvy7mw5k8zaqgjfyr72x2gh3x4ewgae8v5gscf5jh3.private,
@@ -119,19 +128,19 @@ mod tests {
   _nonce: 3077450429259593211617823051143573281856129402760267155982965992208217472983group.public
 }";
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_to_and_from_string() {
         let record = RecordPlaintext::from_string(RECORD).unwrap();
         assert_eq!(record.to_string(), RECORD);
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_microcredits_from_string() {
         let record = RecordPlaintext::from_string(RECORD).unwrap();
         assert_eq!(record.microcredits(), 1500000000000000);
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_serial_number() {
         let pk = PrivateKey::from_string("APrivateKey1zkpDeRpuKmEtLNPdv57aFruPepeH1aGvTkEjBo8bqTzNUhE").unwrap();
         let record = RecordPlaintext::from_string(RECORD).unwrap();
@@ -142,7 +151,7 @@ mod tests {
         assert_eq!(expected_sn, result.unwrap());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_serial_number_can_run_twice_with_same_private_key() {
         let pk = PrivateKey::from_string("APrivateKey1zkpDeRpuKmEtLNPdv57aFruPepeH1aGvTkEjBo8bqTzNUhE").unwrap();
         let record = RecordPlaintext::from_string(RECORD).unwrap();
@@ -153,7 +162,7 @@ mod tests {
         assert_eq!(expected_sn, record.serial_number_string(&pk, program_id, record_name).unwrap());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_serial_number_invalid_program_id_returns_err_string() {
         let pk = PrivateKey::from_string("APrivateKey1zkpDeRpuKmEtLNPdv57aFruPepeH1aGvTkEjBo8bqTzNUhE").unwrap();
         let record = RecordPlaintext::from_string(RECORD).unwrap();
@@ -162,7 +171,7 @@ mod tests {
         assert!(record.serial_number_string(&pk, program_id, record_name).is_err());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_serial_number_invalid_record_name_returns_err_string() {
         let pk = PrivateKey::from_string("APrivateKey1zkpDeRpuKmEtLNPdv57aFruPepeH1aGvTkEjBo8bqTzNUhE").unwrap();
         let record = RecordPlaintext::from_string(RECORD).unwrap();
@@ -171,7 +180,7 @@ mod tests {
         assert!(record.serial_number_string(&pk, program_id, record_name).is_err());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_bad_inputs_to_from_string() {
         let invalid_bech32 = "{ owner: aleo2d5hg2z3ma00382pngntdp68e74zv54jdxy249qhaujhks9c72yrs33ddah.private, microcredits: 99u64.public, _nonce: 0group.public }";
         assert_eq!(

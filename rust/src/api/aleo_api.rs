@@ -2,37 +2,61 @@
 use crate::account::{PrivateKey};
 // use crate::{Address, OfflineQuery, ProgramManager, ProvingKey, RecordPlaintext, VerifyingKey};
 use anyhow;
-// use futures::executor;
+use futures::executor;
+use crate::ProgramManager;
 
 // 0.3.1
 #[flutter_rust_bridge::frb(sync)]
 pub fn private_key_new() -> String { return PrivateKey::new().to_string(); }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn from_seed_unchecked(seed: Vec<u8>) -> String {
-    // 16 进制转 u8 的代码， 这里直接传递 u8，所以不需要
-    // let bytes = hex::decode(seed).unwrap();
-    // let bytes_slice: &[u8] = &bytes;
-
+pub fn private_key_from_seed(seed: Vec<u8>) -> String {
     return PrivateKey::from_seed_unchecked(&seed).to_string();
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn to_address(private_key: String) -> String {
-    return PrivateKey::from_string(&private_key).unwrap().to_address().to_string();
-}
-
-#[flutter_rust_bridge::frb(sync)]
-pub fn to_view_key(private_key: String) -> String {
+pub fn private_key_to_view_key(private_key: String) -> String {
     return PrivateKey::from_string(&private_key).unwrap().to_view_key().to_string();
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn sign(message_bytes: Vec<u8>, private_key: String) -> String {
+pub fn private_key_to_address(private_key: String) -> String {
+    return PrivateKey::from_string(&private_key).unwrap().to_address().to_string();
+}
+
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn sign_message(message_bytes: Vec<u8>, private_key: String) -> String {
     let pk = PrivateKey::from_string(&private_key).unwrap();
     return pk.sign(&message_bytes).to_string();
 }
 
+
+pub fn build_transaction() -> String {
+    let seed = "6ee24c8b8a66957256b6ff2959d7a882a7791df6fb9049427e670dc7fb6e42dd".to_string();
+
+    let bytes = hex::decode(seed).unwrap();
+
+    let pk = PrivateKey::from_seed_unchecked(&bytes);
+
+    let transaction = executor::block_on(ProgramManager::transfer(
+        &pk,
+        10000f64,
+        "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
+        "public",
+        None,
+        0.1,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    ));
+
+    return transaction.unwrap().to_string();
+}
 // #[flutter_rust_bridge::frb(sync)]
 // pub fn transfer(private_key: String,
 //                 amount_credits: f64,

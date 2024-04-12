@@ -1,18 +1,38 @@
+// Copyright (C) 2019-2023 Aleo Systems Inc.
+// This file is part of the Aleo SDK library.
+
+// The Aleo SDK library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// The Aleo SDK library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with the Aleo SDK library. If not, see <https://www.gnu.org/licenses/>.
+
 use super::RecordPlaintext;
 use crate::account::ViewKey;
 
 use crate::types::native::RecordCiphertextNative;
 use std::{ops::Deref, str::FromStr};
+use wasm_bindgen::prelude::*;
 
 /// Encrypted Aleo record
+#[wasm_bindgen]
 #[derive(Clone)]
 pub struct RecordCiphertext(RecordCiphertextNative);
 
+#[wasm_bindgen]
 impl RecordCiphertext {
     /// Create a record ciphertext from a string
     ///
     /// @param {string} record String representation of a record ciphertext
     /// @returns {RecordCiphertext | Error} Record ciphertext
+    #[wasm_bindgen(js_name = fromString)]
     pub fn from_string(record: &str) -> Result<RecordCiphertext, String> {
         Self::from_str(record).map_err(|_| "The record ciphertext string provided was invalid".to_string())
     }
@@ -21,6 +41,7 @@ impl RecordCiphertext {
     ///
     /// @returns {string} String representation of the record ciphertext
     #[allow(clippy::inherent_to_string)]
+    #[wasm_bindgen(js_name = toString)]
     pub fn to_string(&self) -> String {
         self.0.to_string()
     }
@@ -40,6 +61,7 @@ impl RecordCiphertext {
     ///
     /// @param {ViewKey} view_key View key used to decrypt the ciphertext
     /// @returns {boolean}
+    #[wasm_bindgen(js_name = isOwner)]
     pub fn is_owner(&self, view_key: &ViewKey) -> bool {
         self.0.is_owner(view_key)
     }
@@ -65,6 +87,8 @@ impl Deref for RecordCiphertext {
 mod tests {
     use super::*;
 
+    use wasm_bindgen_test::wasm_bindgen_test;
+
     const OWNER_PLAINTEXT: &str = r"{
   owner: aleo1j7qxyunfldj2lp8hsvy7mw5k8zaqgjfyr72x2gh3x4ewgae8v5gscf5jh3.private,
   microcredits: 1500000000000000u64.private,
@@ -78,13 +102,13 @@ mod tests {
     const _OWNER_PRIVATE_KEY: &str = "APrivateKey1zkpJkyYRGYtkeHDaFfwsKtUJzia7csiWhfBWPXWhXJzy9Ls";
     const _OWNER_ADDRESS: &str = "aleo1j7qxyunfldj2lp8hsvy7mw5k8zaqgjfyr72x2gh3x4ewgae8v5gscf5jh3";
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_to_and_from_string() {
         let record = RecordCiphertext::from_string(OWNER_CIPHERTEXT).unwrap();
         assert_eq!(record.to_string(), OWNER_CIPHERTEXT);
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_invalid_strings() {
         let invalid_bech32 = "record2qqj3a67efazf0awe09grqqg44htnh9vaw7l729vl309c972x7ldquqq2k2cax8s7qsqqyqtpgvqqyqsq4seyrzvfa98fkggzccqr68af8e9m0q8rzeqh8a8aqql3a854v58sgrygdv4jn9s8ckwfd48vujrmv0rtfasqh8ygn88ch34ftck8szspvfpsqqszqzvxx9t8s9g66teeepgxmvnw5ymgapcwt2lpy9d5eus580k08wpq544jcl437wjv206u5pxst6few9ll4yhufwldgpx80rlwq8nhssqywmfsd85skg564vqhm3gxsp8q6r30udmqxrxmxx2v8xycdg8pn5ps3dhfvv";
         assert_eq!(
@@ -94,7 +118,7 @@ mod tests {
         assert!(RecordCiphertext::from_string(invalid_bech32).is_err());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_decrypt() {
         let record = RecordCiphertext::from_string(OWNER_CIPHERTEXT).unwrap();
         let view_key = ViewKey::from_string(OWNER_VIEW_KEY);
@@ -104,7 +128,7 @@ mod tests {
         assert!(record.decrypt(&incorrect_view_key).is_err());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_is_owner() {
         let record = RecordCiphertext::from_string(OWNER_CIPHERTEXT).unwrap();
         let view_key = ViewKey::from_string(OWNER_VIEW_KEY);
