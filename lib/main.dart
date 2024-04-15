@@ -8,7 +8,7 @@ import 'package:flutter_aleo_rust_lib/src/rust/api/simple.dart';
 import 'package:flutter_aleo_rust_lib/src/rust/frb_generated.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 
-import 'aleo/aleo_hd_key.dart';
+import 'aleo_hd_key.dart';
 
 Future<void> main() async {
   await RustLib.init();
@@ -68,6 +68,11 @@ class _MyAppState extends State<MyApp> {
             //     'private key2: `${privateKeyFromDerivePath(testMnemonic, 1)}`'),
             // Text('view key2: `${viewKeyFromDerivePath(testMnemonic, 1)}'),
             // Text('address2: `${addressFromDerivePath(testMnemonic, 1)}`'),
+
+
+
+
+            Text('public transfer',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
             ElevatedButton(
                 onPressed: () {
                   buildTransfer();
