@@ -35,8 +35,11 @@ class Environment {
       _getEnv("CARGOKIT_DARWIN_PLATFORM_NAME");
 
   /// List of architectures to build for (arm64, armv7, x86_64).
-  static List<String> get darwinArchs =>
-      _getEnv("CARGOKIT_DARWIN_ARCHS").split(' ');
+  static List<String> get darwinArchs {
+    final r = _getEnv("CARGOKIT_DARWIN_ARCHS").split(' ');
+    r.remove("x86_64");
+    return r;
+  }
 
   // Gradle
   static String get minSdkVersion => _getEnv("CARGOKIT_MIN_SDK_VERSION");

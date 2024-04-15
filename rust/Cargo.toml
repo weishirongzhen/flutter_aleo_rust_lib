@@ -11,7 +11,6 @@ flutter_rust_bridge = "=2.0.0-dev.30"
 aleo = {path = "../aleo-rust-archived"}
 aleo-rust = {path = "../aleo-rust-archived/rust"}
 openssl = { version = "0.10", features = ["vendored"] }
-
 [dependencies.colored]
 version = "2"
 
