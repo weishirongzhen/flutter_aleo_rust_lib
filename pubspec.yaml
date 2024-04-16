@@ -1,6 +1,7 @@
 name: flutter_aleo_rust_lib
 description: "A Flutter project wrap Aleo network rust api to dart api"
 homepage: https://github.com/weishirongzhen/flutter_aleo_rust_lib
+publish_to: none
 
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 
