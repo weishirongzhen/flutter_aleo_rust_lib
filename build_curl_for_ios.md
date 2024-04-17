@@ -35,7 +35,7 @@ make install
 - build settings -> Link Search Paths -> add dylib path
 
 
-# remember to remove "x86_64" on rust_builder/cargokit/build_tool/lib/src/environment.dart or else will build failed, because there is no x86 lib
+# remove "x86_64" on rust_builder/cargokit/build_tool/lib/src/environment.dart or else will build failed, because there is no x86 lib
 
 ```dart
   static List<String> get darwinArchs {
@@ -44,6 +44,23 @@ make install
     return r;
   }
 ```
+
+如果集成的是dylib 
+
+修改 dylib的 install_name：
+install_name_tool -id @loader_path/Frameworks/libcurl.4.dylib libcurl.4.dylib
+otool -L libcurl.4.dylib 查看是否修改成功
+
+添加库到rust的 pods中:
+Build Phase -> Link binary libraries 添加头文件搜索路径，保证没有编译和链接错误
+添加库搜索路径到  Build Setting -> Library Search Path
+Build Phase 添加 copy file 到 Frameworks
+
+
+
+
+添加 libcurl.a 后运行报错找不到zlib的错误
+在Xcode  Build Setting中 Other Linker Flags 添加 -lz 的 flag
 
 
 
