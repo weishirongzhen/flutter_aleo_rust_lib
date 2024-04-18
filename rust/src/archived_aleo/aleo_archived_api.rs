@@ -106,7 +106,6 @@ pub fn do_transfer(
     //         }
     //     }
     // };
-    println!("计时1 {:?}", SystemTime::now());
     // Execute the transfer
     let transfer = program_manager.transfer(
         amount_microcredits,
@@ -117,7 +116,6 @@ pub fn do_transfer(
         None,
         None,
     );
-    println!("计时2 {:?}", SystemTime::now());
 
     // Inform the user of the result of the transfer
     if transfer.is_err() {

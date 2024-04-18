@@ -16,3 +16,30 @@ version = "2"
 
 [dependencies.anyhow]
 version = "1.0"
+
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+incremental = true
+debug = false
+
+[profile.bench]
+opt-level = 3
+debug = false
+rpath = false
+lto = "thin"
+incremental = true
+debug-assertions = false
+
+[profile.dev]
+opt-level = 2
+lto = "thin"
+incremental = true
+
+[profile.test]
+opt-level = 2
+lto = "thin"
+incremental = true
+debug = true
+debug-assertions = true
