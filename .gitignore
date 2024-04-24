@@ -42,3 +42,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /rust_lib_flutter_aleo_rust_lib.xcframework
+/aleo-rust-archived
+/temp_ios
