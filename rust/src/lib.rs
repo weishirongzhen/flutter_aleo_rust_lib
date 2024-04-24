@@ -16,6 +16,7 @@ pub mod types;
 pub use types::Field;
 
 pub mod record;
+
 pub use record::*;
 
 use types::native;
@@ -23,8 +24,8 @@ use std::str::FromStr;
 
 use types::native::RecordPlaintextNative;
 
-pub fn log(s: &str){
-    println!("wtf {}",s);
+pub fn log(s: &str) {
+    println!("wtf {}", s);
 }
 
 pub trait Credits {
@@ -60,7 +61,12 @@ mod test {
     // index 1 seed: eee3c5c60eb4bbdbc61340e79047ca412811cbc7d5058c93d0bab6ca95a3ab42 --  private key: APrivateKey1zkpHj3e8S4AGVvCjFheuEHPz6ukSbrnMwa8yTJXmRhK8V9K
 
     use std::result;
-    use crate::{PrivateKey, ProgramManager};
+    use std::sync::{Arc, RwLock};
+    use rand::prelude::StdRng;
+    use rand::SeedableRng;
+    use snarkvm_synthesizer::Trace;
+    use crate::{Address, PrivateKey, ProgramManager};
+    use crate::types::native::CurrentAleo;
 
     #[test]
     fn private_key_from_seed() {
@@ -97,6 +103,31 @@ mod test {
             None,
         ).await;
 
-        println!("result {:?}",result.unwrap());
+        println!("result {:?}", result.unwrap());
     }
+
+    #[test]
+    fn transfer_delegate() {
+        let seed = "6f2f42f8777c6d333bd72e67800fa956f812d7ada2457953f9811d078d6c6e62".to_string();
+
+        let bytes = hex::decode(seed).unwrap();
+
+        let pk = PrivateKey::from_seed_unchecked(&bytes);
+
+        println!("address = {}", Address::from_private_key(&pk).to_string());
+        let result = ProgramManager::delegate_transfer_public(
+            &pk,
+            1000f64,
+            "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
+            "public",
+            None,
+            0.001,
+            None,
+        );
+
+        println!("authorization {:?}", result.clone().unwrap()[0]);
+        println!("program {:?}", result.clone().unwrap()[1]);
+        println!("fee authorization {:?}", result.clone().unwrap()[2]);
+    }
+
 }

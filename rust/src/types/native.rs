@@ -45,7 +45,7 @@ pub use snarkvm_synthesizer::{
     Program,
     VM,
 };
-pub use snarkvm::{
+pub use snarkvm_wasm::{
     console::network::Environment,
     fields::PrimeField,
     utilities::{FromBytes, ToBytes, Uniform},

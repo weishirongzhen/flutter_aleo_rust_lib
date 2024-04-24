@@ -97,6 +97,45 @@ macro_rules! execute_program {
 }
 
 #[macro_export]
+macro_rules! execute_program_delegate {
+    ($process:expr, $inputs:expr, $program_string:expr, $function_id_string:expr, $private_key:expr, $rng:expr) => {{
+
+
+        log("Loading program");
+        let program =
+            ProgramNative::from_str($program_string).map_err(|_| "The program ID provided was invalid".to_string())?;
+        log("Loading function");
+        let function_name = IdentifierNative::from_str($function_id_string)
+            .map_err(|_| "The function name provided was invalid".to_string())?;
+
+        let program_id = program.id().to_string();
+
+        if program_id != "credits.aleo" {
+            log("Adding program to the process");
+            if let Ok(stored_program) = $process.get_program(program.id()) {
+                if stored_program != &program {
+                    return Err("The program provided does not match the program stored in the cache, please clear the cache before proceeding".to_string());
+                }
+            } else {
+                $process.add_program(&program).map_err(|e| e.to_string())?;
+            }
+        }
+
+        log("Creating authorization");
+        let authorization = $process
+            .authorize::<CurrentAleo, _>(
+                $private_key,
+                program.id(),
+                function_name,
+                $inputs.iter(),
+                $rng,
+            )
+            .map_err(|err| err.to_string())?;
+       (authorization, program)
+    }};
+}
+
+#[macro_export]
 macro_rules! execute_fee {
     ($process:expr, $private_key:expr, $fee_record:expr, $fee_microcredits:expr, $submission_url:expr, $fee_proving_key:expr, $fee_verifying_key:expr, $execution_id:expr, $rng:expr, $offline_query:expr) => {{
         if (($fee_proving_key.is_some() && $fee_verifying_key.is_none())
@@ -164,5 +203,20 @@ macro_rules! execute_fee {
         $process.verify_fee(&fee, $execution_id).map_err(|e| e.to_string())?;
 
         fee
+    }};
+}
+
+#[macro_export]
+macro_rules! execute_fee_delegate {
+    ($process:expr, $private_key:expr, $fee_record:expr, $fee_microcredits:expr, $submission_url:expr, $execution_id:expr, $rng:expr, $offline_query:expr) => {{
+
+
+
+
+        log("Authorizing Fee");
+        let fee_authorization = $process.authorize_fee_public::<CurrentAleo, _>($private_key, $fee_microcredits, 0u64, $execution_id, $rng).map_err(|e| e.to_string())?;
+
+
+        fee_authorization
     }};
 }

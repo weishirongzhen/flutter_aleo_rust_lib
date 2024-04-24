@@ -16,28 +16,13 @@
 
 use super::*;
 
-use crate::{
-    execute_fee,
-    execute_program,
-    log,
-    process_inputs,
-    OfflineQuery,
-    PrivateKey,
-    RecordPlaintext,
-    Transaction,
-};
+use crate::{execute_fee, execute_program, log, process_inputs, OfflineQuery, PrivateKey, RecordPlaintext, Transaction, execute_program_delegate, execute_fee_delegate};
 
-use crate::types::native::{
-    CurrentAleo,
-    IdentifierNative,
-    ProcessNative,
-    ProgramNative,
-    RecordPlaintextNative,
-    TransactionNative,
-};
+use crate::types::native::{CurrentAleo, Field, IdentifierNative, ProcessNative, ProgramNative, RecordPlaintextNative, TransactionNative, Uniform};
 use js_sys::Array;
 use rand::{rngs::StdRng, SeedableRng};
 use std::{ops::Add, str::FromStr};
+use snarkvm_synthesizer::{process, Trace};
 
 #[wasm_bindgen]
 impl ProgramManager {
@@ -195,5 +180,79 @@ impl ProgramManager {
         log("Creating execution transaction for transfer");
         let transaction = TransactionNative::from_execution(execution, Some(fee)).map_err(|err| err.to_string())?;
         Ok(Transaction::from(transaction))
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn delegate_transfer_public(
+        private_key: &PrivateKey,
+        amount_credits: f64,
+        recipient: &str,
+        transfer_type: &str,
+        amount_record: Option<RecordPlaintext>,
+        fee_credits: f64,
+        fee_record: Option<RecordPlaintext>,
+    ) -> Result<Vec<String>, String> {
+        log("Executing transfer program");
+        let fee_microcredits = match &fee_record {
+            Some(fee_record) => Self::validate_amount(fee_credits, fee_record, true)?,
+            None => (fee_credits * 1_000_000.0) as u64,
+        };
+        let amount_microcredits = match &amount_record {
+            Some(amount_record) => Self::validate_amount(amount_credits, amount_record, true)?,
+            None => (amount_credits * 1_000_000.0) as u64,
+        };
+
+        log("Setup the program and inputs");
+
+        let program = ProgramNative::credits().unwrap().to_string();
+        let rng = &mut StdRng::from_entropy();
+
+        log("Transfer Type is:");
+        log(transfer_type);
+
+        let (transfer_type, inputs) = match transfer_type {
+            "public" | "transfer_public" | "transferPublic" => {
+                let mut inputs = Vec::<String>::new();
+                inputs.push(recipient.to_string());
+                inputs.push(amount_microcredits.to_string().add("u64"));
+                ("transfer_public", inputs)
+            }
+
+            _ => return Err("Invalid transfer type".to_string()),
+        };
+
+        let mut process_native = ProcessNative::load().map_err(|err| err.to_string())?;
+        let process = &mut process_native;
+
+
+        log("Executing transfer function");
+        let  (auth, program) = execute_program_delegate!(
+            process,
+            inputs,
+            &program,
+            transfer_type,
+            private_key,
+            rng
+        );
+
+        log("transfer function end");
+
+        log("Executing the fee");
+        let fee = execute_fee_delegate!(
+            process,
+            private_key,
+            fee_record,
+            fee_microcredits,
+            node_url,
+            auth.to_execution_id().unwrap(),
+            rng,
+            offline_query
+        );
+
+        let mut result = Vec::new();
+        result.push(auth.to_string());
+        result.push(program.to_string());
+        result.push(fee.to_string());
+        Ok(result)
     }
 }
