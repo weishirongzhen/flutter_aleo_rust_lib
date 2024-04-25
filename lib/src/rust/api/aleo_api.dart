@@ -27,5 +27,18 @@ String signMessage(
     RustLib.instance.api.signMessage(
         messageBytes: messageBytes, privateKey: privateKey, hint: hint);
 
+List<String> generatePublicTransferDelegate(
+        {required String privateKey,
+        required String recipient,
+        required double amountCredits,
+        required double feeCredits,
+        dynamic hint}) =>
+    RustLib.instance.api.generatePublicTransferDelegate(
+        privateKey: privateKey,
+        recipient: recipient,
+        amountCredits: amountCredits,
+        feeCredits: feeCredits,
+        hint: hint);
+
 Future<String> buildTransaction({dynamic hint}) =>
     RustLib.instance.api.buildTransaction(hint: hint);

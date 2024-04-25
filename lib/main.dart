@@ -40,24 +40,27 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('flutter aleo rust lib')),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
-            Text('private key: `$pk`'),
-            Text(
-                'view key: `${privateKeyToViewKey(privateKey: "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8")}`'),
-            Text('address: `${privateKeyToAddress(privateKey: pk)}`'),
-            Text('derivePath account index 0: `${dp()}`'),
-            Text(
-                'sign output: `${signMessage(messageBytes: "1".codeUnits, privateKey: pk)}`'),
-            ElevatedButton(
-                onPressed: () {
-                  buildTransfer();
-                },
-                child: Text("Test")),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                  'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
+              Text('private key: `$pk`'),
+              Text(
+                  'view key: `${privateKeyToViewKey(privateKey: "APrivateKey1zkp8zjQLSTzbswrPzDMEEysPP8aCJ8qUdWYvbtLAjfKufp8")}`'),
+              Text('address: `${privateKeyToAddress(privateKey: pk)}`'),
+              Text('derivePath account index 0: `${dp()}`'),
+              Text(
+                  'sign output: `${signMessage(messageBytes: "1".codeUnits, privateKey: pk)}`'),
+              ElevatedButton(
+                  onPressed: () {
+                    buildTransfer();
+                  },
+                  child: Text("Test")),
+              Text('delegate data`${buildDelegateData().map((e) => e)}`'),
+            ],
+          ),
         ),
       ),
     );
@@ -73,5 +76,16 @@ class _MyAppState extends State<MyApp> {
   void buildTransfer() async {
     final tx = await buildTransaction();
     log("wtf tx = $tx");
+  }
+
+  /// 数组， 第一个值 authorization 第二值 program， 第三个值 fee_authorization
+  List<String> buildDelegateData() {
+    return generatePublicTransferDelegate(
+      privateKey: pk,
+      recipient:
+          "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
+      amountCredits: 0.001,
+      feeCredits: 0.01,
+    );
   }
 }

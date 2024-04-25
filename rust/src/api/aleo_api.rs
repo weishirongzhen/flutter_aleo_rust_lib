@@ -3,7 +3,7 @@ use crate::account::{PrivateKey};
 // use crate::{Address, OfflineQuery, ProgramManager, ProvingKey, RecordPlaintext, VerifyingKey};
 use anyhow;
 use futures::executor;
-use crate::ProgramManager;
+use crate::{Address, ProgramManager};
 
 // 0.3.1
 #[flutter_rust_bridge::frb(sync)]
@@ -29,6 +29,22 @@ pub fn private_key_to_address(private_key: String) -> String {
 pub fn sign_message(message_bytes: Vec<u8>, private_key: String) -> String {
     let pk = PrivateKey::from_string(&private_key).unwrap();
     return pk.sign(&message_bytes).to_string();
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn generate_public_transfer_delegate(private_key: String, recipient: String, amount_credits: f64, fee_credits: f64) -> Vec<String> {
+    let pk = PrivateKey::from_string(&private_key).unwrap();
+
+    let result = ProgramManager::delegate_transfer_public(
+        &pk,
+        amount_credits,
+        &recipient,
+        "public",
+        None,
+        fee_credits,
+        None,
+    );
+    return result.unwrap();
 }
 
 
