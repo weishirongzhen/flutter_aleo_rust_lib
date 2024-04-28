@@ -70,15 +70,16 @@ fn wire_build_transaction_impl(
     )
 }
 fn wire_generate_public_transfer_delegate_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "generate_public_transfer_delegate",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -95,14 +96,16 @@ fn wire_generate_public_transfer_delegate_impl(
             let api_amount_credits = <f64>::sse_decode(&mut deserializer);
             let api_fee_credits = <f64>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse((move || {
-                Result::<_, ()>::Ok(crate::api::aleo_api::generate_public_transfer_delegate(
-                    api_private_key,
-                    api_recipient,
-                    api_amount_credits,
-                    api_fee_credits,
-                ))
-            })())
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::aleo_api::generate_public_transfer_delegate(
+                        api_private_key,
+                        api_recipient,
+                        api_amount_credits,
+                        api_fee_credits,
+                    ))
+                })())
+            }
         },
     )
 }
@@ -396,6 +399,7 @@ fn pde_ffi_dispatcher_primary_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         7 => wire_build_transaction_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_generate_public_transfer_delegate_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
@@ -409,7 +413,6 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        6 => wire_generate_public_transfer_delegate_impl(ptr, rust_vec_len, data_len),
         2 => wire_private_key_from_seed_impl(ptr, rust_vec_len, data_len),
         1 => wire_private_key_new_impl(ptr, rust_vec_len, data_len),
         4 => wire_private_key_to_address_impl(ptr, rust_vec_len, data_len),

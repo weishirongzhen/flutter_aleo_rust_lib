@@ -15,15 +15,14 @@ pub fn private_key_from_seed(seed: Vec<u8>) -> String {
 }
 
 #[flutter_rust_bridge::frb(sync)]
+#[flutter_rust_bridge::frb(sync)]
 pub fn private_key_to_view_key(private_key: String) -> String {
     return PrivateKey::from_string(&private_key).unwrap().to_view_key().to_string();
 }
-
 #[flutter_rust_bridge::frb(sync)]
 pub fn private_key_to_address(private_key: String) -> String {
     return PrivateKey::from_string(&private_key).unwrap().to_address().to_string();
 }
-
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn sign_message(message_bytes: Vec<u8>, private_key: String) -> String {
@@ -31,7 +30,6 @@ pub fn sign_message(message_bytes: Vec<u8>, private_key: String) -> String {
     return pk.sign(&message_bytes).to_string();
 }
 
-#[flutter_rust_bridge::frb(sync)]
 pub fn generate_public_transfer_delegate(private_key: String, recipient: String, amount_credits: f64, fee_credits: f64) -> Vec<String> {
     let pk = PrivateKey::from_string(&private_key).unwrap();
 

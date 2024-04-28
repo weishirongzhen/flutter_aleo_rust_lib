@@ -55,10 +55,15 @@ class _MyAppState extends State<MyApp> {
                   'sign output: `${signMessage(messageBytes: "1".codeUnits, privateKey: pk)}`'),
               ElevatedButton(
                   onPressed: () {
-                    buildTransfer();
+                    buildPublicTransferDelegateData();
                   },
-                  child: Text("Test")),
-              Text('delegate data`${buildDelegateData().map((e) => e)}`'),
+                  child: const Text("Test")),
+              FutureBuilder<List<String>>(
+                  future: buildPublicTransferDelegateData(),
+                  builder: (context, snapshot) {
+                    return Text(
+                        'delegate data`${snapshot.data?.map((e) => e)}`');
+                  }),
             ],
           ),
         ),
@@ -73,13 +78,9 @@ class _MyAppState extends State<MyApp> {
     return pk;
   }
 
-  void buildTransfer() async {
-    final tx = await buildTransaction();
-    log("wtf tx = $tx");
-  }
 
   /// 数组， 第一个值 authorization 第二值 program， 第三个值 fee_authorization
-  List<String> buildDelegateData() {
+  Future<List<String>> buildPublicTransferDelegateData() async {
     return generatePublicTransferDelegate(
       privateKey: pk,
       recipient:

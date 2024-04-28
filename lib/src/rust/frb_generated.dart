@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 abstract class RustLibApi extends BaseApi {
   Future<String> buildTransaction({dynamic hint});
 
-  List<String> generatePublicTransferDelegate(
+  Future<List<String>> generatePublicTransferDelegate(
       {required String privateKey,
       required String recipient,
       required double amountCredits,
@@ -125,20 +125,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  List<String> generatePublicTransferDelegate(
+  Future<List<String>> generatePublicTransferDelegate(
       {required String privateKey,
       required String recipient,
       required double amountCredits,
       required double feeCredits,
       dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(privateKey, serializer);
         sse_encode_String(recipient, serializer);
         sse_encode_f_64(amountCredits, serializer);
         sse_encode_f_64(feeCredits, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_String,
