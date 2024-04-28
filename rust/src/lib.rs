@@ -117,11 +117,11 @@ mod test {
         println!("address = {}", Address::from_private_key(&pk).to_string());
         let result = ProgramManager::delegate_transfer_public(
             &pk,
-            1000f64,
+            0.01234f64,
             "aleo19jjmsrusvuduyxgufd7ax24p2sp73eedx0agky7tzfa0su66wcgqlmqz4x",
             "public",
             None,
-            0.001,
+            0.268,
             None,
         );
 
