@@ -31,8 +31,9 @@ make -j8
 make install
 ```
 
-- after flutter run, open xcode -> select you rust lib framework -> build phrase -> Link Binary With libraries -> add dylib
-- build settings -> Link Search Paths -> add dylib path
+- 执行 flutter run后等待报错, 打开 xcode -> select you rust lib framework -> build phrase -> Link Binary With libraries -> add .a lib
+- build settings -> Link Search Paths -> add .a path
+  虽然这里已经可以运行， 但是ios还是可能会闪退， 如果闪退原因中，时提示 dylib找不到， 则需要删除.a 同级目录下的 dylib， 否则可能意外链接到 xcode编译中，导致启动找不到dylib闪退
 
 
 # remove "x86_64" on rust_builder/cargokit/build_tool/lib/src/environment.dart or else will build failed, because there is no x86 lib
@@ -45,7 +46,7 @@ make install
   }
 ```
 
-如果集成的是dylib 
+如果集成的是dylib
 
 修改 dylib的 install_name：
 install_name_tool -id @loader_path/Frameworks/libcurl.4.dylib libcurl.4.dylib
@@ -61,6 +62,8 @@ Build Phase 添加 copy file 到 Frameworks
 
 添加 libcurl.a 后运行报错找不到zlib的错误
 在Xcode  Build Setting中 Other Linker Flags 添加 -lz 的 flag
+
+
 
 
 
